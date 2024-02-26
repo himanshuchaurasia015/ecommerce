@@ -2,6 +2,8 @@ const { type } = require("express/lib/response")
 const mongoose= require("mongoose")
 const { required } = require("nodemon/lib/config")
 const validator=require("validator")
+const bcrypt=require("bcryptjs")
+const jwt=require("jsonwebtoken")
 
 
 const userSchema= new mongoose.Schema({
@@ -38,9 +40,30 @@ const userSchema= new mongoose.Schema({
         type:String,
         default:"user"
     },
-    resetPasswordToken: Sting,
+    resetPasswordToken: String,
     resetPasswordExpire: Date,
 });
 
+userSchema.pre("save",async function (next){
+    if(!this.isModified("password")){
+        next()
+    }
+    this.password=await bcrypt.hash(this.password,10);
+});
 
-Module.exports=mongoose.model("User",userSchema);
+//jwt token
+
+userSchema.methods.getJWTToken= function(){
+    return jwt.sign({id:this._id}, process.env.JWT_SECRET,{
+        expiresIn: process.env.JWT_EXPIRE,
+    })
+}
+
+//Compare password
+
+userSchema.methods.comparePassword= async function(enteredPassword){
+    return bcrypt.compare(enteredPassword,this.password);
+}
+
+
+module.exports=mongoose.model("User",userSchema);
