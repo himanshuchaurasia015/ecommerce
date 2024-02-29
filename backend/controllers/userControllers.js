@@ -39,7 +39,7 @@ exports.loginUser= catchAsyncErrors(async(req,res,next)=>{
         return next(new ErrorHandler("Invalid Email or Password",401));
     }
     
-    const isPasswordMatched= user.comparePassword(password);
+    const isPasswordMatched= await user.comparePassword(password);
     
     if(!isPasswordMatched){
         return next(new ErrorHandler("Invalid Email or Password",401))
@@ -84,7 +84,7 @@ exports.forgetPassword=catchAsyncErrors(async(req, res,next)=>{
 
     const resetPasswordUrl = `${req.protocol}://${req.get("host")}/api/v1/password/reset/${resetToken}`;
 
-    const message =` Yur password reset token is :- \n\n ${resetPasswordUrl} \n\n If you have not requested this email then, please ignore it`;
+    const message =` Your password reset token is :- \n\n ${resetPasswordUrl} \n\n If you have not requested this email then, please ignore it`;
     
     try{
 
@@ -138,3 +138,33 @@ exports.resetPassword=catchAsyncErrors(async(req,res,next)=>{
     sendToken(user,200,res)
 
 })
+
+
+//get user detail
+exports.getUserDetails=catchAsyncErrors(async(req,res,next)=>{
+    const user = await User.findById(req.user.id);
+   
+    res.status(200).json({
+        success: true,
+        user,
+    });
+
+});
+
+
+exports.upDatePassword=catchAsyncErrors(async(req,res,next)=>{
+    const user = await User.findById(req.user.id).select("+password");
+
+    const isPasswordMatched= await user.comparePassword(req.body.oldPassword);
+
+    if(!isPasswordMatched){
+        return next(new ErrorHandler("Old Password is incorrect",400));
+
+    }
+    
+   
+    res.status(200).json({
+        success: true,
+        user,
+    })
+});
