@@ -7,6 +7,7 @@ const authenticate= asyncHandler(async(req,res,next)=>{
     let token;
 
     token=req.cookies.jwt;
+
     
 
     if (token){
@@ -36,6 +37,7 @@ const authenticate= asyncHandler(async(req,res,next)=>{
 
 
 const authorizeAdmin=(req,res,next)=>{
+    
     if(req.user && req.user.isAdmin){
         next()
     }else{
