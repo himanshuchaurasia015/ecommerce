@@ -32,8 +32,8 @@ const addProduct = asyncHandler(async (req, res) => {
 
 const updateProductDetails = asyncHandler(async (req, res) => {
   try {
-    const { name, description, price, category, quantity, brand } = req.fields;
-
+    let { name, description, price, category, quantity, brand } = req.fields;
+console.log(category)
     // Validation
     switch (true) {
       case !name:
@@ -49,7 +49,9 @@ const updateProductDetails = asyncHandler(async (req, res) => {
       case !quantity:
         return res.json({ error: "Quantity is required" });
     }
-
+    price=parseInt(price);
+  
+    console.log(category)
     const product = await Product.findByIdAndUpdate(
       req.params.id,
       { ...req.fields },
@@ -105,6 +107,7 @@ const fetchProducts = asyncHandler(async (req, res) => {
 
 const fetchProductById = asyncHandler(async (req, res) => {
   try {
+    console.log(req.params)
     const product = await Product.findById(req.params.id);
     if (product) {
       return res.json(product);
