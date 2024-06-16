@@ -27,7 +27,7 @@ const ProductCard = ({ p }) => {
             className="cursor-pointer w-full"
             src={p.image}
             alt={p.name}
-            style={{ height: "170px", objectFit: "cover" }}
+            style={{ height: "170px", objectFit: "contain" }}
           />
         </Link>
         <HeartIcon product={p} />
