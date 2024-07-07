@@ -22,6 +22,13 @@ app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser())
 
+app.use(express.static(path.join(__dirname,"../frontend/dist/")));
+
+
+app.get("*",(req,res)=>{
+  res.sendFile(path.resolve(__dirname, "../frontend/dist/index.html"))
+})
+
 app.use('/api/users', userRoutes);
 app.use("/api/category", categoryRoutes);
 app.use("/api/products", productRoutes);
