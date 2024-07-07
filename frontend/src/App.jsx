@@ -9,7 +9,7 @@ function App() {
     <>
       <ToastContainer/>
       <Navigation/>
-      <main className="py-3 ps-10">
+      <main className=" ps-10">
         <Outlet/>
       </main>
     </>
